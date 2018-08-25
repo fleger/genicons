@@ -1,6 +1,6 @@
 # genicons
 
-Command line shell script to generate XDG compliant icons from a single image.
+Command line shell script to generate XDG compliant icons from a single SVG or raster image.
 
 ## Installation
 
@@ -9,6 +9,7 @@ Just copy genicons.sh in your path.
 ## Dependencies
 
 * [ImageMagick](https://www.imagemagick.org/script/index.php)
+* [libRSVG](https://wiki.gnome.org/Projects/LibRsvg)
 * [OptiPNG](http://optipng.sourceforge.net/)
 
 ## Usage

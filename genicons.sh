@@ -7,7 +7,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 if [[ $# != 3 ]]; then
-	echo "Usage: $0 iconsource basedir iconpath.png"
+	echo "Usage: $0 iconsource basedir iconpath.{png|svg}"
 	echo
 	echo "Note: iconsource must be an image with the same height and width"
 	echo
@@ -19,6 +19,7 @@ fi
 
 w=$(convert "$1" -print "%w" /dev/null)
 h=$(convert "$1" -print "%h" /dev/null)
+fmt=$(convert "$1" -print "%m" /dev/null)
 
 if [[ "$h" != "$w" ]]; then
 	echo "Only square icons are supported!"
@@ -28,15 +29,21 @@ fi
 readonly -a SIZES=(512 384 256 192 128 96 72 64 48 36 32 24 22 16)
 
 for s in ${SIZES[@]}; do
-	if [[ "$w" -lt "$s" ]]; then
+	if [[ "$fmt" != "SVG" ]] &&  [[ "$w" -lt "$s" ]]; then
 		continue
 	fi
-	args=()
-	if [[ "$w" != "$s" ]]; then
-		args=(-resize ${s}x${s}\> -unsharp 1.5x1+0.7+0.02)
+	target_file="$2/${s}x${s}/${3}"
+	echo "Generating $target_file"
+	install -dm755 "$(dirname "$target_file")"
+	if [[ "$fmt" != "SVG" ]]; then
+		args=()
+		if [[ "$w" != "$s" ]]; then
+			args=(-resize ${s}x${s}\> -unsharp 1.5x1+0.7+0.02)
+		fi
+		convert "$1" "${args[@]}" "$target_file"
+	else
+		# Rasterize SVG
+		rsvg-convert -w "$s" -h "$s" -f png -o "$target_file" "$1"
 	fi
-	echo "Generating $2/${s}x${s}/${3}"
-	install -dm755 "$(dirname "$2/${s}x${s}/${3}")"
-	convert "$1" "${args[@]}" "$2/${s}x${s}/${3}"
-	optipng -o7 "$2/${s}x${s}/${3}"
+	optipng -o7 "$target_file"
 done
