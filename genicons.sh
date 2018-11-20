@@ -6,13 +6,20 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+MIN_SIZE=16
+MAX_SIZE=512
+
 usage() {
-    echo "Usage: $0 ICON_SOURCE BASE_DIR iconpath.{png|svg}"
+    echo "Usage: $0 [-m MIN_SIZE] [-M MAX_SIZE] ICON_SOURCE BASE_DIR iconpath.{png|svg}"
     echo
     echo "Resizes the provided icon to the sizes present in the hicolor icon theme."
     echo "ICON_SOURCE must be an image with the same height and width."
     echo "In any case $0 will never upscale ICON_SOURCE."
     echo "If ICON_SOURCE is a SVG icon, $0 will automatically rasterize the icon."
+    echo
+    echo "Optional arguments:"
+    echo "  -m  Minimum icon size to generate (default: 16)"
+    echo "  -M  Maximum icon size to generate (default: 512)"
     echo
     echo "Example:"
     echo "  Generate application icons derived from myapp.png for the hicolor iconset:"
@@ -20,8 +27,38 @@ usage() {
     exit 1
 }
 
+is_integer() {
+    case "$1" in
+        '' | *[!0-9]*) return 1 ;;
+    esac
+}
+
+while getopts "m:M:" option; do
+    case "${option}" in
+        m)
+            if ! is_integer "$OPTARG"; then
+                >&2 echo "MIN_SIZE must be an integer value!"
+                usage
+            fi
+            MIN_SIZE="${OPTARG}"
+            ;;
+        M)
+            if ! is_integer "$OPTARG"; then
+                >&2 echo "MAX_SIZE must be an integer value!"
+                usage
+            fi
+            MAX_SIZE="${OPTARG}"
+            ;;
+        *)
+            usage
+            ;;
+    esac
+done
+shift $((OPTIND-1))
+
 if [[ $# != 3 ]]; then
-   usage
+    >&2 echo "Wrong number of positional arguments!"
+    usage
 fi
 
 w=$(convert "$1" -print "%w" /dev/null)
@@ -36,6 +73,9 @@ fi
 readonly -a SIZES=(512 384 256 192 128 96 72 64 48 36 32 24 22 16)
 
 for s in ${SIZES[@]}; do
+    if [[ $s -lt "$MIN_SIZE" ]] || [[ $s -gt "$MAX_SIZE" ]]; then
+        continue
+    fi
     if [[ "$fmt" != "SVG" ]] &&  [[ "$w" -lt "$s" ]]; then
         continue
     fi
