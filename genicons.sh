@@ -92,5 +92,5 @@ for s in ${SIZES[@]}; do
         # Rasterize SVG
         rsvg-convert -w "$s" -h "$s" -f png -o "$target_file" "$1"
     fi
-    optipng -o7 "$target_file"
+    optipng -o7 -strip all "$target_file"
 done
