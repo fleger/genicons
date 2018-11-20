@@ -6,15 +6,22 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-if [[ $# != 3 ]]; then
-    echo "Usage: $0 iconsource basedir iconpath.{png|svg}"
+usage() {
+    echo "Usage: $0 ICON_SOURCE BASE_DIR iconpath.{png|svg}"
     echo
-    echo "Note: iconsource must be an image with the same height and width"
+    echo "Resizes the provided icon to the sizes present in the hicolor icon theme."
+    echo "ICON_SOURCE must be an image with the same height and width."
+    echo "In any case $0 will never upscale ICON_SOURCE."
+    echo "If ICON_SOURCE is a SVG icon, $0 will automatically rasterize the icon."
     echo
     echo "Example:"
-    echo "Generate application icons derived from myapp.png for the hicolor iconset:"
-    echo "$0 myapp.png /usr/share/icons/hicolor apps/myapp.png"
+    echo "  Generate application icons derived from myapp.png for the hicolor iconset:"
+    echo "  $0 myapp.png /usr/share/icons/hicolor apps/myapp.png"
     exit 1
+}
+
+if [[ $# != 3 ]]; then
+   usage
 fi
 
 w=$(convert "$1" -print "%w" /dev/null)
