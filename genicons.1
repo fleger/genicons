@@ -1,0 +1,39 @@
+.TH GENICONS 1
+.SH NAME
+genicons \- resizes and install icons to an XDG icon theme
+.SH SYNOPSIS
+.B genicons
+[\fB\-m\fR \fIMIN_SIZE\fR]
+[\fB\-M\fR \fIMAX_SIZE\fR]
+.IR icon_file
+.IR base_dir
+.IR dest_suffix
+.SH DESCRIPTION
+.B genicons
+resizes \fIicon_file\fR to various sizes and install the resized icons into \fIbase_dir\fR/\fIH\fRx\fIW\fR/\fIdest_suffix\fR, where \fIH\fR is the height of the resized icon and \fIW\fR its width. 
+.PP
+\fIicon_file\fR can be of any format supported by imagemagick's convert utility.
+.PP
+The resized icons are in optimized PNG format, so \fIdest_suffix\fR should end by \fB.png\fR.
+.PP
+By default, \fBgenicons\fR scales \fIicon_file\fR to all the sizes in the following list that are smaller than or equal to the size of \fIicon_file\fR: 512x512, 384x384, 256x256, 192x192, 128x128, 96x96, 72x72, 64x64, 48x48, 36x36, 32x32, 24x24, 22x22, 16x16.
+.SH OPTIONS
+.TP
+.BR \-m " " \fIMIN_SIZE\fR
+Limit the minimum size of the generated icons to \fIMIN_SIZE\fRx\fIMIN_SIZE\fR.
+Default is 16.
+.TP
+.BR \-M " " \fIMAX_SIZE\fR
+Limit the maximum size of the generated icons to \fIMAX_SIZE\fRx\fIMAX_SIZE\fR.
+Default is 512.
+.SH BUGS
+\fIicon_file\fR must have the same height and width.
+.SH EXAMPLES
+.TP
+Generate icons from \fImyapp.png\fR into /usr/share/icons/hicolor/\fIW\fRx\fIW\fR/apps/myapp.png:
+genicons myapp.png /usr/share/icons/hicolor/ apps/myapp.png
+.TP
+The same but limit the size of the generated icons between 256x256 and 64x64:
+genicons -m 64 -M 256 myapp.png /usr/share/icons/hicolor/ apps/myapp.png
+
+
