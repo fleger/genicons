@@ -10,7 +10,6 @@ Just copy genicons.sh in your path.
 
 * [ImageMagick](https://www.imagemagick.org/script/index.php)
 * [libRSVG](https://wiki.gnome.org/Projects/LibRsvg)
-* [Efficient Compression Tool](https://github.com/fhanau/Efficient-Compression-Tool)
 
 ## Usage
 
