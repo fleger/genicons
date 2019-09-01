@@ -61,9 +61,9 @@ if [[ $# != 3 ]]; then
     usage
 fi
 
-w=$(convert "$1" -print "%w" /dev/null)
-h=$(convert "$1" -print "%h" /dev/null)
-fmt=$(convert "$1" -print "%m" /dev/null)
+w=$(convert "$1" -print "%w" 2> /dev/null)
+h=$(convert "$1" -print "%h" 2> /dev/null)
+fmt=$(convert "$1" -print "%m" 2> /dev/null)
 
 if [[ "$h" != "$w" ]]; then
     echo "Only square icons are supported!"
